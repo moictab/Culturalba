@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Culturalba</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="title_activity_main2">Main2Activity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="imagen_evento">Imagen del evento</string>
+    <string name="title_activity_evento">EventoActivity</string>
+    <string name="action_actualizar">Actualizar</string>
+    <string name="action_acerca">Acerca de</string>
+    <string name="no_datos">Error al obtener los datos</string>
+    <string name="recargar">Recargar</string>
+    <string name="hecho_por">Hecho con ♥ por moictab para la Hackaton del GDG Albacete de la Semana Cultural de la Escuela Politécnica Superior de Albacete</string>
+    <string name="inicio">Esta aplicación obtiene los datos directamente de la web del Ayuntamiento de Albacete, por lo que si ves fechas erróneas, desactualizadas, faltas de ortografía, o información incorrecta en general, debes saber que es porque así está en la web. \n\n\nAparte de eso, espero que disfrutes la aplicación. En \"Acerca de\" puedes ver más información y obtener el código fuente si lo deseas.</string>
+</resources>

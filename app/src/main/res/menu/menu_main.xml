@@ -1,0 +1,16 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.moictab.culturalba.MainActivity">
+    <item
+        android:id="@+id/action_actualizar"
+        android:orderInCategory="100"
+        android:title="@string/action_actualizar"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_acerca"
+        android:orderInCategory="101"
+        android:title="@string/action_acerca"
+        app:showAsAction="never" />
+</menu>
