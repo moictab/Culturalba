@@ -12,7 +12,8 @@ public class InicioDialog extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         View rootView = getActivity().getLayoutInflater().inflate(R.layout.dialog_inicio, null);
-        builder.setView(rootView);
+        builder.setView(rootView)
+                .setPositiveButton("Aceptar", null);
 
         return builder.create();
     }

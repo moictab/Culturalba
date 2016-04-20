@@ -86,6 +86,7 @@ public class BlockFragment extends Fragment {
                 public void onClick(View v) {
                     Intent intent = new Intent(getActivity(), EventoActivity.class);
                     intent.putExtra("url", holder.mItem.link);
+                    intent.putExtra("fecha", holder.mItem.dateFrom);
                     startActivity(intent);
                 }
             });

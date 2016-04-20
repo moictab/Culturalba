@@ -14,8 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -26,14 +25,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import model.Block;
-import model.Evento;
 import scraper.WebScraper;
 
 public class MainActivity extends AppCompatActivity {
@@ -47,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private ProgressBar progressBar;
     private View emptyLayout;
+    private Button reloadButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,14 +52,23 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        mViewPager = (ViewPager) findViewById(R.id.container);
+
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
         emptyLayout = findViewById(R.id.empty_layout);
+        reloadButton = (Button) emptyLayout.findViewById(R.id.button_reload);
+        reloadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                makeRequest();
+            }
+        });
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
         if (preferences.getBoolean("first_time", true)) {
             InicioDialog dialog = new InicioDialog();
             dialog.show(getFragmentManager(), "inicio_dialog");
-            preferences.edit().putBoolean("first_time", false).commit();
+            preferences.edit().putBoolean("first_time", false).apply();
         }
 
         queue = Volley.newRequestQueue(MainActivity.this);
@@ -72,6 +77,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void makeRequest() {
         progressBar.setVisibility(View.VISIBLE);
+        mViewPager.setVisibility(View.INVISIBLE);
+        emptyLayout.setVisibility(View.GONE);
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, URL, new Response.Listener<String>() {
             @Override
@@ -86,9 +93,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("Volley", "Error: " + error.getMessage());
-                Toast.makeText(MainActivity.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Error obteniendo los datos", Toast.LENGTH_SHORT).show();
                 progressBar.setVisibility(View.GONE);
                 emptyLayout.setVisibility(View.VISIBLE);
+                mViewPager.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -98,13 +106,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void setAdapter() {
         mSectionsPagerAdapter = new PagerAdapter(getSupportFragmentManager());
-        mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
         progressBar.setVisibility(View.GONE);
+        mViewPager.setVisibility(View.VISIBLE);
+        emptyLayout.setVisibility(View.GONE);
     }
 
     @Override

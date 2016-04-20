@@ -24,8 +24,9 @@ public class AboutDialog extends DialogFragment {
             e.printStackTrace();
         }
 
-        tvVersion.setText("Versión " + String.valueOf(version));
-        builder.setView(rootView);
+        tvVersion.setText(getString(R.string.version, String.valueOf(version)));
+        builder.setView(rootView)
+                .setPositiveButton("Aceptar", null);
 
         return builder.create();
     }

@@ -59,7 +59,7 @@ public class WebScraper {
         evento.link = document.baseUri();
 
         try {
-            evento.title = document.select("#titolSeccio").text();
+            evento.title = document.select(".titolSeccio").text();
         } catch (Exception e) {
             e.printStackTrace();
         }

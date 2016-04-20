@@ -89,7 +89,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|start"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/stat_notify_chat"
+        android:src="@mipmap/ic_share_white_24dp"
         app:layout_anchor="@+id/evento_detail_container"
         app:layout_anchorGravity="top|end" />
 
