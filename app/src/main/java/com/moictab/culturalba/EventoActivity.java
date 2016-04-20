@@ -32,11 +32,14 @@ import model.Evento;
 import network.CulturalbaRetryPolicy;
 import scraper.WebScraper;
 
+/**
+ * Pantalla de detalle de evento que contiene toda su información
+ */
 public class EventoActivity extends AppCompatActivity {
 
-    private String url = "";
-    private String dateFromBlock = "";
-    private Evento evento;
+    private String url = "";                        // Dirección web del evento
+    private String dateFromBlock = "";              // Fecha obtenida en la lista de eventos, en caso de que no se pueda cargar desde el detalle de evento se utilizará esta
+    private Evento evento;                          // Datos globales del evento
 
     // UI
     private NestedScrollView scrollView;
@@ -91,12 +94,11 @@ public class EventoActivity extends AppCompatActivity {
         viewLink = findViewById(R.id.link);
         viewDescription = findViewById(R.id.description);
 
-
         viewLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + evento.location + ", Albacete"));
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + evento.location + ", Albacete"));  // Abrimos Google Maps o similar
                     startActivity(intent);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -109,7 +111,7 @@ public class EventoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(evento.link));
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(evento.link));  // Abrimos el navegador
                     startActivity(intent);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -142,6 +144,7 @@ public class EventoActivity extends AppCompatActivity {
             public void onResponse(String response) {
                 evento = WebScraper.scrapEvento(response);
 
+                // Ajustamos la imagen al tamaño del toolbarLayout y la ponemos en él
                 Picasso.with(EventoActivity.this).load(evento.imageLink).resize(toolbarLayout.getWidth(), toolbarLayout.getHeight()).centerCrop().into(target);
                 toolbarLayout.setTitle(evento.title);
 
@@ -164,6 +167,8 @@ public class EventoActivity extends AppCompatActivity {
                     ((TextView) viewHorario.findViewById(R.id.textview_texto)).setText(getString(R.string.no_disponible));
                 }
 
+                // Intentamos parsear fechas de inicio y de fin de la página del evento, pero como los formatos varían,
+                // si no es posible parsearla se mostrará la que había en la lista de eventos
                 if (evento.dateFrom != null && !evento.dateFrom.isEmpty() && evento.dateTo != null && !evento.dateTo.isEmpty()) {
 
                     int yearFrom = Integer.parseInt(evento.dateFrom.substring(0, 4));
@@ -217,6 +222,7 @@ public class EventoActivity extends AppCompatActivity {
             }
         });
 
+        // Puesto que la web del ayuntamiento va regular, es bueno hacer varios intentos y ajustar el timeout
         stringRequest.setRetryPolicy(new CulturalbaRetryPolicy());
         queue.add(stringRequest);
 

@@ -31,8 +31,13 @@ import java.util.List;
 import model.Block;
 import scraper.WebScraper;
 
+/**
+ * Contiene todas las pestañas, que se corresponden a categorías de eventos,
+ * y dentro de cada una de las pestañas muestra una lista de los eventos correspondientes.
+ */
 public class MainActivity extends AppCompatActivity {
 
+    // URL de la que se obtiene la lista de eventos y sus categorías
     private final static String URL = "http://www.albacete.es/es/agenda/agenda-completa";
 
     private List<Block> blocks = new ArrayList<>();
@@ -75,6 +80,9 @@ public class MainActivity extends AppCompatActivity {
         makeRequest();
     }
 
+    /**
+     * Hace la petición web, la parsea y pone los resultados en sus listas correspondientes.
+     */
     public void makeRequest() {
         progressBar.setVisibility(View.VISIBLE);
         mViewPager.setVisibility(View.INVISIBLE);

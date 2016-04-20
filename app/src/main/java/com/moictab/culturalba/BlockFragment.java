@@ -19,6 +19,11 @@ import java.util.List;
 import model.Block;
 import model.Evento;
 
+/**
+ * Cada una de las pantallas que se muestran al hacer un swipe.
+ * Contiene una lista con todos los eventos que se agrupan
+ * bajo la categoría que se indica en su título
+ */
 public class BlockFragment extends Fragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
@@ -116,6 +121,9 @@ public class BlockFragment extends Fragment {
         }
     }
 
+    /**
+     * Decorator personalizado que muestra una línea horizontal separando los ítems de la lista
+     */
     public class DividerItemDecoration extends RecyclerView.ItemDecoration {
         private Drawable mDivider;
 

@@ -6,6 +6,9 @@ import android.app.DialogFragment;
 import android.os.Bundle;
 import android.view.View;
 
+/**
+ * Diálogo de inicio que muestra información. Sólo se muestra una vez
+ */
 public class InicioDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

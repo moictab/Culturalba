@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+/**
+ * Diálogo que se muestra cuando se pulsa la opción de "Acerca de"
+ */
 public class AboutDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

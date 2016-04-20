@@ -17,6 +17,7 @@ public class CulturalbaApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        // Configuración de las peticiones HTTP para cargar las imágenes
         OkHttpClient client = new OkHttpClient();
         client.setConnectTimeout(5, TimeUnit.SECONDS);
         client.setReadTimeout(5, TimeUnit.SECONDS);
