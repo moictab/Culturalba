@@ -18,16 +18,6 @@ public class AboutDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         View rootView = getActivity().getLayoutInflater().inflate(R.layout.dialog_about, null);
 
-        TextView tvVersion = (TextView) rootView.findViewById(R.id.textview_version);
-
-        String version = "0";
-        try {
-            version = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        tvVersion.setText(getString(R.string.version, String.valueOf(version)));
         builder.setView(rootView)
                 .setPositiveButton("Aceptar", null);
 

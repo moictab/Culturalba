@@ -7,6 +7,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -28,6 +29,7 @@ import com.android.volley.toolbox.Volley;
 import java.util.ArrayList;
 import java.util.List;
 
+import listener.OnSettingsAccepted;
 import model.Block;
 import scraper.WebScraper;
 
@@ -35,10 +37,12 @@ import scraper.WebScraper;
  * Contiene todas las pestañas, que se corresponden a categorías de eventos,
  * y dentro de cada una de las pestañas muestra una lista de los eventos correspondientes.
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnSettingsAccepted {
 
     // URL de la que se obtiene la lista de eventos y sus categorías
-    private final static String URL = "http://www.albacete.es/es/agenda/agenda-completa";
+    private final static String URL_TODAY = "http://www.albacete.es/es/agenda";
+    private final static String URL_EVERYTHING = "http://www.albacete.es/es/agenda/agenda-completa";
+    private static String URL;
 
     private List<Block> blocks = new ArrayList<>();
     private RequestQueue queue;
@@ -69,21 +73,29 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Boolean today = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).getBoolean("today", true);
+        if (today) {
+            URL = URL_TODAY;
+        } else {
+            URL = URL_EVERYTHING;
+        }
+
+        queue = Volley.newRequestQueue(MainActivity.this);
+        makeRequest();
+
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
         if (preferences.getBoolean("first_time", true)) {
             InicioDialog dialog = new InicioDialog();
             dialog.show(getFragmentManager(), "inicio_dialog");
             preferences.edit().putBoolean("first_time", false).apply();
         }
-
-        queue = Volley.newRequestQueue(MainActivity.this);
-        makeRequest();
     }
 
     /**
      * Hace la petición web, la parsea y pone los resultados en sus listas correspondientes.
      */
     public void makeRequest() {
+
         progressBar.setVisibility(View.VISIBLE);
         mViewPager.setVisibility(View.INVISIBLE);
         emptyLayout.setVisibility(View.GONE);
@@ -115,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
     private void setAdapter() {
         mSectionsPagerAdapter = new PagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        mSectionsPagerAdapter.notifyDataSetChanged();
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
@@ -136,6 +149,12 @@ public class MainActivity extends AppCompatActivity {
 
         int id = item.getItemId();
 
+        if (id == R.id.action_settings) {
+            SettingsDialog dialog = new SettingsDialog();
+            dialog.setListener(MainActivity.this);
+            dialog.show(getFragmentManager(), "SettingsDialog");
+        }
+
         if (id == R.id.action_actualizar) {
             makeRequest();
             return true;
@@ -149,7 +168,21 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public class PagerAdapter extends FragmentPagerAdapter {
+    @Override
+    public void OnBarcodeProcessed(boolean today) {
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit();
+        editor.putBoolean("today", today).apply();
+
+        if (today) {
+            URL = URL_TODAY;
+        } else {
+            URL = URL_EVERYTHING;
+        }
+
+        makeRequest();
+    }
+
+    public class PagerAdapter extends FragmentStatePagerAdapter {
 
         public PagerAdapter(FragmentManager fm) {
             super(fm);
