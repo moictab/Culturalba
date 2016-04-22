@@ -61,15 +61,15 @@
                 layout="@layout/list_item" />
 
             <include
+                android:id="@+id/fechas"
+                layout="@layout/list_item" />
+
+            <include
                 android:id="@+id/horario"
                 layout="@layout/list_item" />
 
             <include
                 android:id="@+id/precios"
-                layout="@layout/list_item" />
-
-            <include
-                android:id="@+id/fechas"
                 layout="@layout/list_item" />
 
             <include

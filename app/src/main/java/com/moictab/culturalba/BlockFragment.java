@@ -108,7 +108,7 @@ public class BlockFragment extends Fragment {
             public final TextView tvTitulo;
             public final TextView tvFecha;
             public final TextView tvHorario;
-            // public final TextView mDateView;
+
             public Evento mItem;
 
             public ViewHolder(View view) {
