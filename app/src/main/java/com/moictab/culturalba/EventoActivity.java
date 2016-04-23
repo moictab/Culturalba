@@ -2,6 +2,7 @@ package com.moictab.culturalba;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -26,8 +27,10 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+import com.squareup.picasso.Transformation;
 
 import hirondelle.date4j.DateTime;
+import jp.wasabeef.picasso.transformations.ColorFilterTransformation;
 import model.Evento;
 import network.CulturalbaRetryPolicy;
 import scraper.WebScraper;
@@ -144,8 +147,10 @@ public class EventoActivity extends AppCompatActivity {
             public void onResponse(String response) {
                 evento = WebScraper.scrapEvento(response);
 
+                Transformation transformation = new ColorFilterTransformation(Color.argb(100, 0, 0, 0));
+
                 // Ajustamos la imagen al tamaño del toolbarLayout y la ponemos en él
-                Picasso.with(EventoActivity.this).load(evento.imageLink).resize(toolbarLayout.getWidth(), toolbarLayout.getHeight()).centerCrop().into(target);
+                Picasso.with(EventoActivity.this).load(evento.imageLink).resize(toolbarLayout.getWidth(), toolbarLayout.getHeight()).centerCrop().transform(transformation).into(target);
                 toolbarLayout.setTitle(evento.title);
 
                 if (evento.location != null && !evento.location.isEmpty()) {
