@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements OnSettingsAccepte
     }
 
     @Override
-    public void OnBarcodeProcessed(boolean today) {
+    public void OnSettingsAccepted(boolean today) {
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit();
         editor.putBoolean("today", today).apply();
 

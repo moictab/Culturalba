@@ -222,7 +222,6 @@ public class EventoActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("Volley", error.getMessage());
                 Toast.makeText(EventoActivity.this, "Error obteniendo los datos", Toast.LENGTH_SHORT).show();
             }
         });

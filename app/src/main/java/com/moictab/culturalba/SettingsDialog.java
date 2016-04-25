@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -40,7 +39,7 @@ public class SettingsDialog extends DialogFragment {
                 .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        listener.OnBarcodeProcessed(rbHoy.isChecked());
+                        listener.OnSettingsAccepted(rbHoy.isChecked());
                     }
                 });
 
