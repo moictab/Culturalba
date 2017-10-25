@@ -1,4 +1,4 @@
-package com.moictab.culturalba;
+package com.moictab.culturalba.activities;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,7 +12,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -25,15 +24,16 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.moictab.culturalba.R;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.squareup.picasso.Transformation;
 
 import hirondelle.date4j.DateTime;
 import jp.wasabeef.picasso.transformations.ColorFilterTransformation;
-import model.Evento;
-import network.CulturalbaRetryPolicy;
-import scraper.WebScraper;
+import com.moictab.culturalba.model.Evento;
+import com.moictab.culturalba.network.CulturalbaRetryPolicy;
+import com.moictab.culturalba.scraper.WebScraper;
 
 /**
  * Pantalla de detalle de evento que contiene toda su información

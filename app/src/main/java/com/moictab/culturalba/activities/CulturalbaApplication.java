@@ -1,4 +1,4 @@
-package com.moictab.culturalba;
+package com.moictab.culturalba.activities;
 
 import android.app.Application;
 

@@ -1,4 +1,4 @@
-package network;
+package com.moictab.culturalba.network;
 
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;

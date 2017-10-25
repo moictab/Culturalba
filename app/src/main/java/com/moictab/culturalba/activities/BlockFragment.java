@@ -1,4 +1,4 @@
-package com.moictab.culturalba;
+package com.moictab.culturalba.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,8 +16,9 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import model.Block;
-import model.Evento;
+import com.moictab.culturalba.R;
+import com.moictab.culturalba.model.Block;
+import com.moictab.culturalba.model.Evento;
 
 /**
  * Cada una de las pantallas que se muestran al hacer un swipe.

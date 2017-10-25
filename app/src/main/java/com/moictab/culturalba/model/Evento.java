@@ -1,4 +1,4 @@
-package model;
+package com.moictab.culturalba.model;
 
 import org.joda.time.DateTime;
 

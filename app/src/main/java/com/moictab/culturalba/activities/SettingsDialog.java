@@ -1,4 +1,4 @@
-package com.moictab.culturalba;
+package com.moictab.culturalba.activities;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -9,7 +9,8 @@ import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.RadioButton;
 
-import listener.OnSettingsAccepted;
+import com.moictab.culturalba.R;
+import com.moictab.culturalba.listener.OnSettingsAccepted;
 
 /**
  * Diálogo de inicio que muestra información. Sólo se muestra una vez

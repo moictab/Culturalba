@@ -1,4 +1,6 @@
-package scraper;
+package com.moictab.culturalba.scraper;
+
+import com.moictab.culturalba.model.Block;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -7,8 +9,7 @@ import org.jsoup.nodes.Element;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.Block;
-import model.Evento;
+import com.moictab.culturalba.model.Evento;
 
 public class WebScraper {
 
@@ -16,36 +17,41 @@ public class WebScraper {
 
         Document document = Jsoup.parse(response);
         List<Block> blocks = new ArrayList<>();
-        List<Element> elements = document.select(".searchResults").first().children();
 
-        for (int i = 0; i < elements.size(); i++) {
-            if (elements.get(i).children().size() == 0) {
-                elements.remove(i);
-                i--;
-            }
-        }
+        try {
+            List<Element> elements = document.select(".searchResults").first().children();
 
-        for (Element element : elements) {
-
-            Block block = new Block();
-            block.title = element.child(0).html();
-            block.eventos = new ArrayList<>();
-
-            List<Element> eventos = element.children();
-            eventos.remove(0);
-
-            for (Element contentTypeEvento : eventos) {
-                Evento evento = new Evento();
-                evento.title = contentTypeEvento.select(".titulo").first().child(0).html();
-                evento.link = contentTypeEvento.select(".titulo").first().child(0).attr("href");
-                evento.dateFrom = contentTypeEvento.select(".fecha").first().html();
-                evento.horario = contentTypeEvento.select(".horario").first().html();
-                evento.location = contentTypeEvento.select(".lugar").first().html();
-
-                block.eventos.add(evento);
+            for (int i = 0; i < elements.size(); i++) {
+                if (elements.get(i).children().size() == 0) {
+                    elements.remove(i);
+                    i--;
+                }
             }
 
-            blocks.add(block);
+            for (Element element : elements) {
+
+                Block block = new Block();
+                block.title = element.child(0).html();
+                block.eventos = new ArrayList<>();
+
+                List<Element> eventos = element.children();
+                eventos.remove(0);
+
+                for (Element contentTypeEvento : eventos) {
+                    Evento evento = new Evento();
+                    evento.title = contentTypeEvento.select(".titulo").first().child(0).html();
+                    evento.link = contentTypeEvento.select(".titulo").first().child(0).attr("href");
+                    evento.dateFrom = contentTypeEvento.select(".fecha").first().html();
+                    evento.horario = contentTypeEvento.select(".horario").first().html();
+                    evento.location = contentTypeEvento.select(".lugar").first().html();
+
+                    block.eventos.add(evento);
+                }
+
+                blocks.add(block);
+            }
+        } catch (Exception ex) {
+            return blocks;
         }
 
         return blocks;

@@ -1,4 +1,4 @@
-package parser;
+package com.moictab.culturalba.parser;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;

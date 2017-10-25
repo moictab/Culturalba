@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defaultsMap>
+    <entry>
+        <key>periodicity</key>
+        <value>20</value>
+    </entry>
+    <entry>
+        <key>stop</key>
+        <value>false</value>
+    </entry>
+</defaultsMap>

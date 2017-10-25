@@ -1,4 +1,4 @@
-package com.moictab.culturalba;
+package com.moictab.culturalba.activities;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -6,7 +6,6 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -29,29 +28,25 @@ import com.android.volley.toolbox.Volley;
 import java.util.ArrayList;
 import java.util.List;
 
-import listener.OnSettingsAccepted;
-import model.Block;
-import scraper.WebScraper;
+import com.moictab.culturalba.R;
+import com.moictab.culturalba.model.Block;
+import com.moictab.culturalba.scraper.WebScraper;
 
 /**
  * Contiene todas las pestañas, que se corresponden a categorías de eventos,
  * y dentro de cada una de las pestañas muestra una lista de los eventos correspondientes.
  */
-public class MainActivity extends AppCompatActivity implements OnSettingsAccepted {
+public class MainActivity extends AppCompatActivity {
 
     // URL de la que se obtiene la lista de eventos y sus categorías
     private final static String URL_TODAY = "http://www.albacete.es/es/agenda";
-    private final static String URL_EVERYTHING = "http://www.albacete.es/es/agenda/agenda-completa";
-    private static String URL;
 
     private List<Block> blocks = new ArrayList<>();
     private RequestQueue queue;
 
-    private PagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
     private ProgressBar progressBar;
     private View emptyLayout;
-    private Button reloadButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,20 +60,13 @@ public class MainActivity extends AppCompatActivity implements OnSettingsAccepte
 
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
         emptyLayout = findViewById(R.id.empty_layout);
-        reloadButton = (Button) emptyLayout.findViewById(R.id.button_reload);
+        Button reloadButton = (Button) emptyLayout.findViewById(R.id.button_reload);
         reloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 makeRequest();
             }
         });
-
-        Boolean today = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).getBoolean("today", true);
-        if (today) {
-            URL = URL_TODAY;
-        } else {
-            URL = URL_EVERYTHING;
-        }
 
         queue = Volley.newRequestQueue(MainActivity.this);
         makeRequest();
@@ -91,16 +79,14 @@ public class MainActivity extends AppCompatActivity implements OnSettingsAccepte
         }
     }
 
-    /**
-     * Hace la petición web, la parsea y pone los resultados en sus listas correspondientes.
-     */
+
     public void makeRequest() {
 
         progressBar.setVisibility(View.VISIBLE);
         mViewPager.setVisibility(View.INVISIBLE);
         emptyLayout.setVisibility(View.GONE);
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL, new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_TODAY, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 blocks.clear();
@@ -121,11 +107,10 @@ public class MainActivity extends AppCompatActivity implements OnSettingsAccepte
         });
 
         queue.add(stringRequest);
-
     }
 
     private void setAdapter() {
-        mSectionsPagerAdapter = new PagerAdapter(getSupportFragmentManager());
+        PagerAdapter mSectionsPagerAdapter = new PagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mSectionsPagerAdapter.notifyDataSetChanged();
 
@@ -149,12 +134,6 @@ public class MainActivity extends AppCompatActivity implements OnSettingsAccepte
 
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            SettingsDialog dialog = new SettingsDialog();
-            dialog.setListener(MainActivity.this);
-            dialog.show(getFragmentManager(), "SettingsDialog");
-        }
-
         if (id == R.id.action_actualizar) {
             makeRequest();
             return true;
@@ -168,23 +147,9 @@ public class MainActivity extends AppCompatActivity implements OnSettingsAccepte
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void OnSettingsAccepted(boolean today) {
-        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit();
-        editor.putBoolean("today", today).apply();
-
-        if (today) {
-            URL = URL_TODAY;
-        } else {
-            URL = URL_EVERYTHING;
-        }
-
-        makeRequest();
-    }
-
     public class PagerAdapter extends FragmentStatePagerAdapter {
 
-        public PagerAdapter(FragmentManager fm) {
+        PagerAdapter(FragmentManager fm) {
             super(fm);
         }
 

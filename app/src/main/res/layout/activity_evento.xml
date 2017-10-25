@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.moictab.culturalba.EventoActivity"
+    tools:context="com.moictab.culturalba.activities.EventoActivity"
     tools:ignore="MergeRootFrame">
 
     <ProgressBar
@@ -29,6 +29,8 @@
             android:scaleType="fitCenter"
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:expandedTitleTextAppearance="@style/TextAppearance.Design.CollapsingToolbar.Expanded"
+            app:collapsedTitleTextAppearance="@style/TextAppearance.AppCompat.Button"
             app:toolbarId="@+id/toolbar">
 
             <android.support.v7.widget.Toolbar
