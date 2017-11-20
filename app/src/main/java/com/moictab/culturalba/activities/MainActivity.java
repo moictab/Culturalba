@@ -33,12 +33,12 @@ import com.moictab.culturalba.model.Block;
 import com.moictab.culturalba.scraper.WebScraper;
 
 /**
- * Contiene todas las pestañas, que se corresponden a categorías de eventos,
- * y dentro de cada una de las pestañas muestra una lista de los eventos correspondientes.
+ * Contiene todas las pestañas, que se corresponden a categorías de events,
+ * y dentro de cada una de las pestañas muestra una lista de los events correspondientes.
  */
 public class MainActivity extends AppCompatActivity {
 
-    // URL de la que se obtiene la lista de eventos y sus categorías
+    // URL de la que se obtiene la lista de events y sus categorías
     private final static String URL_TODAY = "http://www.albacete.es/es/agenda";
 
     private List<Block> blocks = new ArrayList<>();
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
         if (preferences.getBoolean("first_time", true)) {
-            InicioDialog dialog = new InicioDialog();
+            StartDialog dialog = new StartDialog();
             dialog.show(getFragmentManager(), "inicio_dialog");
             preferences.edit().putBoolean("first_time", false).apply();
         }

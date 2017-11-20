@@ -5,5 +5,5 @@ import java.util.List;
 
 public class Block implements Serializable {
     public String title;
-    public List<Evento> eventos;
+    public List<Event> events;
 }

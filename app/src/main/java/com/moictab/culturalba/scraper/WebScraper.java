@@ -9,7 +9,7 @@ import org.jsoup.nodes.Element;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.moictab.culturalba.model.Evento;
+import com.moictab.culturalba.model.Event;
 
 public class WebScraper {
 
@@ -32,20 +32,20 @@ public class WebScraper {
 
                 Block block = new Block();
                 block.title = element.child(0).html();
-                block.eventos = new ArrayList<>();
+                block.events = new ArrayList<>();
 
                 List<Element> eventos = element.children();
                 eventos.remove(0);
 
                 for (Element contentTypeEvento : eventos) {
-                    Evento evento = new Evento();
-                    evento.title = contentTypeEvento.select(".titulo").first().child(0).html();
-                    evento.link = contentTypeEvento.select(".titulo").first().child(0).attr("href");
-                    evento.dateFrom = contentTypeEvento.select(".fecha").first().html();
-                    evento.horario = contentTypeEvento.select(".horario").first().html();
-                    evento.location = contentTypeEvento.select(".lugar").first().html();
+                    Event event = new Event();
+                    event.title = contentTypeEvento.select(".titulo").first().child(0).html();
+                    event.link = contentTypeEvento.select(".titulo").first().child(0).attr("href");
+                    event.dateFrom = contentTypeEvento.select(".fecha").first().html();
+                    event.horario = contentTypeEvento.select(".horario").first().html();
+                    event.location = contentTypeEvento.select(".lugar").first().html();
 
-                    block.eventos.add(evento);
+                    block.events.add(event);
                 }
 
                 blocks.add(block);
@@ -57,62 +57,62 @@ public class WebScraper {
         return blocks;
     }
 
-    public static Evento scrapEvento(String response) {
+    public static Event scrapEvento(String response) {
 
         Document document = Jsoup.parse(response);
-        Evento evento = new Evento();
+        Event event = new Event();
 
-        evento.link = document.baseUri();
+        event.link = document.baseUri();
 
         try {
-            evento.title = document.select(".titolSeccio").text();
+            event.title = document.select(".titolSeccio").text();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         try {
-            evento.imageLink = document.select("#parent-fieldname-text").first().getElementsByTag("img").first().attributes().get("src");
+            event.imageLink = document.select("#parent-fieldname-text").first().getElementsByTag("img").first().attributes().get("src");
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         try {
-            evento.dateFrom = document.select("#parent-fieldname-startDate").attr("title");
+            event.dateFrom = document.select("#parent-fieldname-startDate").attr("title");
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         try {
-            evento.dateTo = document.select("#parent-fieldname-endDate").attr("title");
+            event.dateTo = document.select("#parent-fieldname-endDate").attr("title");
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         try {
-            evento.location = document.select(".location").get(0).child(0).ownText();
+            event.location = document.select(".location").get(0).child(0).ownText();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         try {
-            evento.precios = document.select(".precios").get(0).child(0).ownText();
+            event.precios = document.select(".precios").get(0).child(0).ownText();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         try {
-            evento.horario = document.select(".horario").get(0).child(0).ownText();
+            event.horario = document.select(".horario").get(0).child(0).ownText();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         try {
-            evento.description = document.select("#parent-fieldname-text").text();
+            event.description = document.select("#parent-fieldname-text").text();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return evento;
+        return event;
     }
 
 }

@@ -1,40 +1,28 @@
 package com.moictab.culturalba.activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.List;
-
 import com.moictab.culturalba.R;
 import com.moictab.culturalba.model.Block;
-import com.moictab.culturalba.model.Evento;
+import com.moictab.culturalba.model.Event;
 
-/**
- * Cada una de las pantallas que se muestran al hacer un swipe.
- * Contiene una lista con todos los eventos que se agrupan
- * bajo la categoría que se indica en su título
- */
+import java.util.List;
+
 public class BlockFragment extends Fragment {
 
-    private static final String ARG_SECTION_NUMBER = "section_number";
+    private static final String ARG_SECTION_NUMBER = "SECTION_NUMBER";
     private Block block;
 
-    // UI
-    private View recyclerView;
-    private RecyclerViewAdapter adapter;
-
     public BlockFragment() {
+        // Default empty constructor
     }
 
     public static BlockFragment newInstance(int sectionNumber) {
@@ -47,51 +35,48 @@ public class BlockFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        block = (Block) getArguments().getSerializable("block");
 
-        recyclerView = rootView.findViewById(R.id.evento_list);
+        View view = inflater.inflate(R.layout.fragment_main, container, false);
+        this.block = (Block) getArguments().getSerializable("block");
+
+        View recyclerView = view.findViewById(R.id.events_list);
         setupRecyclerView((RecyclerView) recyclerView);
 
-        return rootView;
+        return view;
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        adapter = new RecyclerViewAdapter(block.eventos);
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(block.events);
         recyclerView.setAdapter(adapter);
-    }
-
-    private void setupItemDecorator(@NonNull RecyclerView recyclerView) {
-        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
     }
 
     public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
-        private final List<Evento> mValues;
+        private final List<Event> events;
 
-        public RecyclerViewAdapter(List<Evento> items) {
-            mValues = items;
+        RecyclerViewAdapter(List<Event> items) {
+            events = items;
         }
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.event_list_content, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.events_list_content, parent, false);
             return new ViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.mItem = mValues.get(position);
-            holder.tvTitulo.setText(mValues.get(position).title);
-            holder.tvFecha.setText(mValues.get(position).dateFrom);
-            holder.tvHorario.setText(mValues.get(position).horario);
+            holder.event = events.get(position);
+            holder.tvTitle.setText(events.get(position).title);
+            holder.tvDate.setText(events.get(position).dateFrom);
+            holder.tvSchedule.setText(events.get(position).horario);
 
             holder.rootView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), EventoActivity.class);
-                    intent.putExtra("url", holder.mItem.link);
-                    intent.putExtra("fecha", holder.mItem.dateFrom);
+                    Intent intent = new Intent(getActivity(), EventActivity.class);
+                    intent.putExtra("url", holder.event.link);
+                    intent.putExtra("fecha", holder.event.dateFrom);
                     startActivity(intent);
                 }
             });
@@ -99,54 +84,24 @@ public class BlockFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return mValues.size();
+            return events.size();
         }
 
-        public class ViewHolder extends RecyclerView.ViewHolder {
+        class ViewHolder extends RecyclerView.ViewHolder {
 
-            public final View rootView;
-            public final TextView tvTitulo;
-            public final TextView tvFecha;
-            public final TextView tvHorario;
+            final View rootView;
+            final TextView tvTitle;
+            final TextView tvDate;
+            final TextView tvSchedule;
 
-            public Evento mItem;
+            Event event;
 
-            public ViewHolder(View view) {
+            ViewHolder(View view) {
                 super(view);
                 rootView = view;
-                tvTitulo = (TextView) view.findViewById(R.id.textview_title);
-                tvFecha = (TextView) view.findViewById(R.id.textview_fecha);
-                tvHorario = (TextView) view.findViewById(R.id.textview_horario);
-            }
-        }
-    }
-
-    /**
-     * Decorator personalizado que muestra una línea horizontal separando los ítems de la lista
-     */
-    public class DividerItemDecoration extends RecyclerView.ItemDecoration {
-        private Drawable mDivider;
-
-        public DividerItemDecoration(Context context) {
-            mDivider = ContextCompat.getDrawable(context, R.drawable.line_divider);
-        }
-
-        @Override
-        public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
-            int left = parent.getPaddingLeft();
-            int right = parent.getWidth() - parent.getPaddingRight();
-
-            int childCount = parent.getChildCount();
-            for (int i = 0; i < childCount - 1; i++) {
-                View child = parent.getChildAt(i);
-
-                RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
-
-                int top = child.getBottom() + params.bottomMargin;
-                int bottom = top + mDivider.getIntrinsicHeight();
-
-                mDivider.setBounds(left, top, right, bottom);
-                mDivider.draw(c);
+                tvTitle = (TextView) view.findViewById(R.id.tv_title);
+                tvDate = (TextView) view.findViewById(R.id.tv_date);
+                tvSchedule = (TextView) view.findViewById(R.id.tv_schedule);
             }
         }
     }

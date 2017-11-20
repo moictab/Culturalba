@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.EventoActivity"
+            android:name=".activities.EventActivity"
             android:label="@string/title_activity_evento"
             android:theme="@style/AppTheme.NoActionBar" />
 

@@ -14,7 +14,7 @@
     <string name="fechas">Fechas</string>
     <string name="descripcion">Descripción</string>
     <string name="enlace_original">Enlace original</string>
-    <string name="imagen_evento">Imagen del evento</string>
+    <string name="imagen_evento">Imagen del event</string>
     <string name="title_activity_evento">EventoActivity</string>
     <string name="action_actualizar">Actualizar</string>
     <string name="action_acerca">Acerca de</string>
@@ -30,4 +30,5 @@
     <string name="action_hoy">Mostrar sólo los resultados de hoy</string>
     <string name="mostrar_todo">Mostrar todos los eventos</string>
     <string name="mostrar_hoy">Mostrar eventos de hoy</string>
+    <string name="Accept">Aceptar</string>
 </resources>

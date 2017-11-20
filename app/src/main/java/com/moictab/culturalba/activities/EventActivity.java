@@ -31,18 +31,15 @@ import com.squareup.picasso.Transformation;
 
 import hirondelle.date4j.DateTime;
 import jp.wasabeef.picasso.transformations.ColorFilterTransformation;
-import com.moictab.culturalba.model.Evento;
+import com.moictab.culturalba.model.Event;
 import com.moictab.culturalba.network.CulturalbaRetryPolicy;
 import com.moictab.culturalba.scraper.WebScraper;
 
-/**
- * Pantalla de detalle de evento que contiene toda su información
- */
-public class EventoActivity extends AppCompatActivity {
+public class EventActivity extends AppCompatActivity {
 
-    private String url = "";                        // Dirección web del evento
-    private String dateFromBlock = "";              // Fecha obtenida en la lista de eventos, en caso de que no se pueda cargar desde el detalle de evento se utilizará esta
-    private Evento evento;                          // Datos globales del evento
+    private String url = "";                        // Dirección web del event
+    private String dateFromBlock = "";              // Fecha obtenida en la lista de events, en caso de que no se pueda cargar desde el detalle de event se utilizará esta
+    private Event event;                          // Datos globales del event
 
     // UI
     private NestedScrollView scrollView;
@@ -68,7 +65,7 @@ public class EventoActivity extends AppCompatActivity {
         final Target target = new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                toolbarLayout.setBackground(new BitmapDrawable(EventoActivity.this.getResources(), bitmap));
+                toolbarLayout.setBackground(new BitmapDrawable(EventActivity.this.getResources(), bitmap));
             }
 
             @Override
@@ -101,11 +98,11 @@ public class EventoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + evento.location + ", Albacete"));  // Abrimos Google Maps o similar
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + event.location + ", Albacete"));  // Abrimos Google Maps o similar
                     startActivity(intent);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Toast.makeText(EventoActivity.this, "Error abriendo el mapa", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EventActivity.this, "Error abriendo el mapa", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -114,11 +111,11 @@ public class EventoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(evento.link));  // Abrimos el navegador
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(event.link));  // Abrimos el navegador
                     startActivity(intent);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Toast.makeText(EventoActivity.this, "Error abriendo el enlace", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EventActivity.this, "Error abriendo el enlace", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -141,47 +138,47 @@ public class EventoActivity extends AppCompatActivity {
         ((TextView) viewDescription.findViewById(R.id.textview_titulo)).setText(getString(R.string.descripcion));
         ((ImageView) viewDescription.findViewById(R.id.imageview_icon)).setImageResource(R.mipmap.ic_description_black_24dp);
 
-        RequestQueue queue = Volley.newRequestQueue(EventoActivity.this);
+        RequestQueue queue = Volley.newRequestQueue(EventActivity.this);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                evento = WebScraper.scrapEvento(response);
+                event = WebScraper.scrapEvento(response);
 
                 Transformation transformation = new ColorFilterTransformation(Color.argb(100, 0, 0, 0));
 
                 // Ajustamos la imagen al tamaño del toolbarLayout y la ponemos en él
-                Picasso.with(EventoActivity.this).load(evento.imageLink).resize(toolbarLayout.getWidth(), toolbarLayout.getHeight()).centerCrop().transform(transformation).into(target);
-                toolbarLayout.setTitle(evento.title);
+                Picasso.with(EventActivity.this).load(event.imageLink).resize(toolbarLayout.getWidth(), toolbarLayout.getHeight()).centerCrop().transform(transformation).into(target);
+                toolbarLayout.setTitle(event.title);
 
-                if (evento.location != null && !evento.location.isEmpty()) {
-                    ((TextView) viewLocation.findViewById(R.id.textview_texto)).setText(evento.location);
+                if (event.location != null && !event.location.isEmpty()) {
+                    ((TextView) viewLocation.findViewById(R.id.textview_texto)).setText(event.location);
                 } else {
                     ((TextView) viewLocation.findViewById(R.id.textview_texto)).setText(getString(R.string.no_disponible));
                 }
 
-                if (evento.link != null && !evento.link.isEmpty()) {
-                    ((TextView) viewLink.findViewById(R.id.textview_texto)).setText(evento.link);
+                if (event.link != null && !event.link.isEmpty()) {
+                    ((TextView) viewLink.findViewById(R.id.textview_texto)).setText(event.link);
                     ((TextView) viewLink.findViewById(R.id.textview_texto)).setTextColor(getResources().getColor(R.color.blue_link));
                 } else {
                     ((TextView) viewLink.findViewById(R.id.textview_texto)).setText(getString(R.string.no_disponible));
                 }
 
-                if (evento.horario != null && !evento.horario.isEmpty()) {
-                    ((TextView) viewHorario.findViewById(R.id.textview_texto)).setText(evento.horario);
+                if (event.horario != null && !event.horario.isEmpty()) {
+                    ((TextView) viewHorario.findViewById(R.id.textview_texto)).setText(event.horario);
                 } else {
                     ((TextView) viewHorario.findViewById(R.id.textview_texto)).setText(getString(R.string.no_disponible));
                 }
 
-                // Intentamos parsear fechas de inicio y de fin de la página del evento, pero como los formatos varían,
-                // si no es posible parsearla se mostrará la que había en la lista de eventos
-                if (evento.dateFrom != null && !evento.dateFrom.isEmpty() && evento.dateTo != null && !evento.dateTo.isEmpty()) {
+                // Intentamos parsear fechas de inicio y de fin de la página del event, pero como los formatos varían,
+                // si no es posible parsearla se mostrará la que había en la lista de events
+                if (event.dateFrom != null && !event.dateFrom.isEmpty() && event.dateTo != null && !event.dateTo.isEmpty()) {
 
-                    int yearFrom = Integer.parseInt(evento.dateFrom.substring(0, 4));
-                    int monthFrom = Integer.parseInt(evento.dateFrom.substring(5, 7));
-                    int dayFrom = Integer.parseInt(evento.dateFrom.substring(8, 10));
-                    int yearTo = Integer.parseInt(evento.dateTo.substring(0, 4));
-                    int monthTo = Integer.parseInt(evento.dateTo.substring(5, 7));
-                    int dayTo = Integer.parseInt(evento.dateTo.substring(8, 10));
+                    int yearFrom = Integer.parseInt(event.dateFrom.substring(0, 4));
+                    int monthFrom = Integer.parseInt(event.dateFrom.substring(5, 7));
+                    int dayFrom = Integer.parseInt(event.dateFrom.substring(8, 10));
+                    int yearTo = Integer.parseInt(event.dateTo.substring(0, 4));
+                    int monthTo = Integer.parseInt(event.dateTo.substring(5, 7));
+                    int dayTo = Integer.parseInt(event.dateTo.substring(8, 10));
 
                     DateTime dateFrom = new DateTime(yearFrom, monthFrom, dayFrom, 0, 0, 0, 0);
                     DateTime dateTo = new DateTime(yearTo, monthTo, dayTo, 0, 0, 0, 0);
@@ -191,14 +188,14 @@ public class EventoActivity extends AppCompatActivity {
                     ((TextView) viewFechas.findViewById(R.id.textview_texto)).setText(dateFromBlock);
                 }
 
-                if (evento.precios != null && !evento.precios.isEmpty()) {
-                    ((TextView) viewPrecios.findViewById(R.id.textview_texto)).setText(evento.precios);
+                if (event.precios != null && !event.precios.isEmpty()) {
+                    ((TextView) viewPrecios.findViewById(R.id.textview_texto)).setText(event.precios);
                 } else {
                     ((TextView) viewPrecios.findViewById(R.id.textview_texto)).setText(getString(R.string.no_disponible));
                 }
 
-                if (evento.description != null && !evento.description.isEmpty()) {
-                    ((TextView) viewDescription.findViewById(R.id.textview_texto)).setText(evento.description);
+                if (event.description != null && !event.description.isEmpty()) {
+                    ((TextView) viewDescription.findViewById(R.id.textview_texto)).setText(event.description);
                 } else {
                     ((TextView) viewDescription.findViewById(R.id.textview_texto)).setText(getString(R.string.no_disponible));
                 }
@@ -212,7 +209,7 @@ public class EventoActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         Intent sendIntent = new Intent();
                         sendIntent.setAction(Intent.ACTION_SEND);
-                        sendIntent.putExtra(Intent.EXTRA_TEXT, evento.link);
+                        sendIntent.putExtra(Intent.EXTRA_TEXT, event.link);
                         sendIntent.setType("text/plain");
                         startActivity(sendIntent);
                     }
@@ -222,7 +219,7 @@ public class EventoActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(EventoActivity.this, "Error obteniendo los datos", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EventActivity.this, "Error obteniendo los datos", Toast.LENGTH_SHORT).show();
             }
         });
 

@@ -16,7 +16,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textview_title"
+            android:id="@+id/tv_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
@@ -29,7 +29,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/textview_fecha"
+            android:id="@+id/tv_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
@@ -42,7 +42,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/textview_horario"
+            android:id="@+id/tv_schedule"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"

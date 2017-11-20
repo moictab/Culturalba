@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.moictab.culturalba.activities.EventoActivity"
+    tools:context="com.moictab.culturalba.activities.EventActivity"
     tools:ignore="MergeRootFrame">
 
     <ProgressBar

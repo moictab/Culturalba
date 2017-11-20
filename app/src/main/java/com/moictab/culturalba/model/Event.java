@@ -4,7 +4,7 @@ import org.joda.time.DateTime;
 
 import java.io.Serializable;
 
-public class Evento implements Serializable {
+public class Event implements Serializable {
     public String title;
     public String link;
     public String description;

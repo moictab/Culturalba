@@ -11,7 +11,7 @@ import com.moictab.culturalba.R;
 /**
  * Diálogo de inicio que muestra información. Sólo se muestra una vez
  */
-public class InicioDialog extends DialogFragment {
+public class StartDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
