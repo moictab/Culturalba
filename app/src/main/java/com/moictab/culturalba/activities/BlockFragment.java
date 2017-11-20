@@ -52,7 +52,6 @@ public class BlockFragment extends Fragment {
 
         recyclerView = rootView.findViewById(R.id.evento_list);
         setupRecyclerView((RecyclerView) recyclerView);
-        setupItemDecorator((RecyclerView) recyclerView);
 
         return rootView;
     }
@@ -76,7 +75,7 @@ public class BlockFragment extends Fragment {
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.evento_list_content, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.event_list_content, parent, false);
             return new ViewHolder(view);
         }
 

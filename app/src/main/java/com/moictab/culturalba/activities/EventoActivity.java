@@ -57,7 +57,7 @@ public class EventoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_evento);
+        setContentView(R.layout.activity_event);
 
         url = getIntent().getExtras().getString("url");
         dateFromBlock = getIntent().getExtras().getString("fecha");

@@ -11,4 +11,4 @@
     android:paddingTop="8dp"
     app:layoutManager="LinearLayoutManager"
     tools:context="com.moictab.culturalba.activities.MainActivity"
-    tools:listitem="@layout/evento_list_content" />
+    tools:listitem="@layout/event_list_content" />
