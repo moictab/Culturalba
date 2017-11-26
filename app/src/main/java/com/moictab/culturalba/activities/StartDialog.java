@@ -8,9 +8,6 @@ import android.view.View;
 
 import com.moictab.culturalba.R;
 
-/**
- * Diálogo de inicio que muestra información. Sólo se muestra una vez
- */
 public class StartDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -18,7 +15,7 @@ public class StartDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         View rootView = getActivity().getLayoutInflater().inflate(R.layout.dialog_start, null);
         builder.setView(rootView)
-                .setPositiveButton("Aceptar", null);
+                .setPositiveButton(R.string.accept, null);
 
         return builder.create();
     }

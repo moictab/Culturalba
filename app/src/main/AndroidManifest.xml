@@ -25,18 +25,8 @@
         </activity>
         <activity
             android:name=".activities.EventActivity"
-            android:label="@string/title_activity_evento"
+            android:label="@string/title_activity_event"
             android:theme="@style/AppTheme.NoActionBar" />
-
-        <service
-            android:name="service.GetInformationService"
-            android:exported="false"></service>
-
-        <receiver android:name="network.NetworkStateReceiver">
-            <intent-filter android:priority="100">
-                <action android:name="android.net.wifi.STATE_CHANGE" />
-            </intent-filter>
-        </receiver>
 
     </application>
 

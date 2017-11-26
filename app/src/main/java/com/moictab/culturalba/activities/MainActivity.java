@@ -24,21 +24,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.moictab.culturalba.R;
 import com.moictab.culturalba.model.Block;
 import com.moictab.culturalba.scraper.WebScraper;
 
-/**
- * Contiene todas las pestañas, que se corresponden a categorías de events,
- * y dentro de cada una de las pestañas muestra una lista de los events correspondientes.
- */
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
-    // URL de la que se obtiene la lista de events y sus categorías
     private final static String URL_TODAY = "http://www.albacete.es/es/agenda";
 
     private List<Block> blocks = new ArrayList<>();
@@ -99,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("Volley", "Error: " + error.getMessage());
-                Toast.makeText(MainActivity.this, "Error obteniendo los datos", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, R.string.error_getting_data, Toast.LENGTH_SHORT).show();
                 progressBar.setVisibility(View.GONE);
                 emptyLayout.setVisibility(View.VISIBLE);
                 mViewPager.setVisibility(View.INVISIBLE);

@@ -31,23 +31,22 @@ import com.squareup.picasso.Transformation;
 
 import hirondelle.date4j.DateTime;
 import jp.wasabeef.picasso.transformations.ColorFilterTransformation;
+
 import com.moictab.culturalba.model.Event;
-import com.moictab.culturalba.network.CulturalbaRetryPolicy;
+import com.moictab.culturalba.network.ApplicationRetryPolicy;
 import com.moictab.culturalba.scraper.WebScraper;
 
 public class EventActivity extends AppCompatActivity {
 
-    private String url = "";                        // Dirección web del event
-    private String dateFromBlock = "";              // Fecha obtenida en la lista de events, en caso de que no se pueda cargar desde el detalle de event se utilizará esta
-    private Event event;                          // Datos globales del event
+    private String dateFromBlock = "";
+    private Event event;
 
-    // UI
     private NestedScrollView scrollView;
     private ProgressBar progressBar;
     private View viewLocation;
-    private View viewHorario;
-    private View viewPrecios;
-    private View viewFechas;
+    private View viewSchedule;
+    private View viewPrices;
+    private View viewDates;
     private View viewLink;
     private View viewDescription;
 
@@ -56,8 +55,8 @@ public class EventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
 
-        url = getIntent().getExtras().getString("url");
-        dateFromBlock = getIntent().getExtras().getString("fecha");
+        String url = getIntent().getExtras().getString("url");
+        dateFromBlock = getIntent().getExtras().getString("date");
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -88,9 +87,9 @@ public class EventActivity extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
 
         viewLocation = findViewById(R.id.location);
-        viewHorario = findViewById(R.id.horario);
-        viewPrecios = findViewById(R.id.precios);
-        viewFechas = findViewById(R.id.fechas);
+        viewSchedule = findViewById(R.id.horario);
+        viewPrices = findViewById(R.id.precios);
+        viewDates = findViewById(R.id.fechas);
         viewLink = findViewById(R.id.link);
         viewDescription = findViewById(R.id.description);
 
@@ -120,57 +119,54 @@ public class EventActivity extends AppCompatActivity {
             }
         });
 
-        ((TextView) viewLocation.findViewById(R.id.textview_titulo)).setText(getString(R.string.localizacion));
-        ((ImageView) viewLocation.findViewById(R.id.imageview_icon)).setImageResource(R.mipmap.ic_place_black_36dp);
+        ((TextView) viewLocation.findViewById(R.id.tv_event_title)).setText(getString(R.string.localizacion));
+        ((ImageView) viewLocation.findViewById(R.id.iv_icon)).setImageResource(R.mipmap.ic_place_black_36dp);
 
-        ((TextView) viewHorario.findViewById(R.id.textview_titulo)).setText(getString(R.string.horario));
-        ((ImageView) viewHorario.findViewById(R.id.imageview_icon)).setImageResource(R.mipmap.ic_access_time_black_36dp);
+        ((TextView) viewSchedule.findViewById(R.id.tv_event_title)).setText(getString(R.string.horario));
+        ((ImageView) viewSchedule.findViewById(R.id.iv_icon)).setImageResource(R.mipmap.ic_access_time_black_36dp);
 
-        ((TextView) viewPrecios.findViewById(R.id.textview_titulo)).setText(getString(R.string.precios));
-        ((ImageView) viewPrecios.findViewById(R.id.imageview_icon)).setImageResource(R.mipmap.ic_euro_symbol_black_36dp);
+        ((TextView) viewPrices.findViewById(R.id.tv_event_title)).setText(getString(R.string.precios));
+        ((ImageView) viewPrices.findViewById(R.id.iv_icon)).setImageResource(R.mipmap.ic_euro_symbol_black_36dp);
 
-        ((TextView) viewFechas.findViewById(R.id.textview_titulo)).setText(getString(R.string.fechas));
-        ((ImageView) viewFechas.findViewById(R.id.imageview_icon)).setImageResource(R.mipmap.ic_event_black_36dp);
+        ((TextView) viewDates.findViewById(R.id.tv_event_title)).setText(getString(R.string.fechas));
+        ((ImageView) viewDates.findViewById(R.id.iv_icon)).setImageResource(R.mipmap.ic_event_black_36dp);
 
-        ((TextView) viewLink.findViewById(R.id.textview_titulo)).setText(getString(R.string.enlace_original));
-        ((ImageView) viewLink.findViewById(R.id.imageview_icon)).setImageResource(R.mipmap.ic_link_black_24dp);
+        ((TextView) viewLink.findViewById(R.id.tv_event_title)).setText(getString(R.string.enlace_original));
+        ((ImageView) viewLink.findViewById(R.id.iv_icon)).setImageResource(R.mipmap.ic_link_black_24dp);
 
-        ((TextView) viewDescription.findViewById(R.id.textview_titulo)).setText(getString(R.string.descripcion));
-        ((ImageView) viewDescription.findViewById(R.id.imageview_icon)).setImageResource(R.mipmap.ic_description_black_24dp);
+        ((TextView) viewDescription.findViewById(R.id.tv_event_title)).setText(getString(R.string.descripcion));
+        ((ImageView) viewDescription.findViewById(R.id.iv_icon)).setImageResource(R.mipmap.ic_description_black_24dp);
 
         RequestQueue queue = Volley.newRequestQueue(EventActivity.this);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                event = WebScraper.scrapEvento(response);
+                event = WebScraper.scrapEvent(response);
 
                 Transformation transformation = new ColorFilterTransformation(Color.argb(100, 0, 0, 0));
 
-                // Ajustamos la imagen al tamaño del toolbarLayout y la ponemos en él
                 Picasso.with(EventActivity.this).load(event.imageLink).resize(toolbarLayout.getWidth(), toolbarLayout.getHeight()).centerCrop().transform(transformation).into(target);
                 toolbarLayout.setTitle(event.title);
 
                 if (event.location != null && !event.location.isEmpty()) {
-                    ((TextView) viewLocation.findViewById(R.id.textview_texto)).setText(event.location);
+                    ((TextView) viewLocation.findViewById(R.id.tv_text)).setText(event.location);
                 } else {
-                    ((TextView) viewLocation.findViewById(R.id.textview_texto)).setText(getString(R.string.no_disponible));
+                    ((TextView) viewLocation.findViewById(R.id.tv_text)).setText(getString(R.string.no_disponible));
                 }
 
                 if (event.link != null && !event.link.isEmpty()) {
-                    ((TextView) viewLink.findViewById(R.id.textview_texto)).setText(event.link);
-                    ((TextView) viewLink.findViewById(R.id.textview_texto)).setTextColor(getResources().getColor(R.color.blue_link));
+                    ((TextView) viewLink.findViewById(R.id.tv_text)).setText(event.link);
+                    ((TextView) viewLink.findViewById(R.id.tv_text)).setTextColor(getResources().getColor(R.color.blue_link));
                 } else {
-                    ((TextView) viewLink.findViewById(R.id.textview_texto)).setText(getString(R.string.no_disponible));
+                    ((TextView) viewLink.findViewById(R.id.tv_text)).setText(getString(R.string.no_disponible));
                 }
 
-                if (event.horario != null && !event.horario.isEmpty()) {
-                    ((TextView) viewHorario.findViewById(R.id.textview_texto)).setText(event.horario);
+                if (event.schedule != null && !event.schedule.isEmpty()) {
+                    ((TextView) viewSchedule.findViewById(R.id.tv_text)).setText(event.schedule);
                 } else {
-                    ((TextView) viewHorario.findViewById(R.id.textview_texto)).setText(getString(R.string.no_disponible));
+                    ((TextView) viewSchedule.findViewById(R.id.tv_text)).setText(getString(R.string.no_disponible));
                 }
 
-                // Intentamos parsear fechas de inicio y de fin de la página del event, pero como los formatos varían,
-                // si no es posible parsearla se mostrará la que había en la lista de events
                 if (event.dateFrom != null && !event.dateFrom.isEmpty() && event.dateTo != null && !event.dateTo.isEmpty()) {
 
                     int yearFrom = Integer.parseInt(event.dateFrom.substring(0, 4));
@@ -183,21 +179,21 @@ public class EventActivity extends AppCompatActivity {
                     DateTime dateFrom = new DateTime(yearFrom, monthFrom, dayFrom, 0, 0, 0, 0);
                     DateTime dateTo = new DateTime(yearTo, monthTo, dayTo, 0, 0, 0, 0);
 
-                    ((TextView) viewFechas.findViewById(R.id.textview_texto)).setText("Desde el " + dateFrom.format("DD/MM/YYYY") + " hasta el " + dateTo.format("DD/MM/YYYY"));
+                    ((TextView) viewDates.findViewById(R.id.tv_text)).setText("Desde el " + dateFrom.format("DD/MM/YYYY") + " hasta el " + dateTo.format("DD/MM/YYYY"));
                 } else {
-                    ((TextView) viewFechas.findViewById(R.id.textview_texto)).setText(dateFromBlock);
+                    ((TextView) viewDates.findViewById(R.id.tv_text)).setText(dateFromBlock);
                 }
 
-                if (event.precios != null && !event.precios.isEmpty()) {
-                    ((TextView) viewPrecios.findViewById(R.id.textview_texto)).setText(event.precios);
+                if (event.prices != null && !event.prices.isEmpty()) {
+                    ((TextView) viewPrices.findViewById(R.id.tv_text)).setText(event.prices);
                 } else {
-                    ((TextView) viewPrecios.findViewById(R.id.textview_texto)).setText(getString(R.string.no_disponible));
+                    ((TextView) viewPrices.findViewById(R.id.tv_text)).setText(getString(R.string.no_disponible));
                 }
 
                 if (event.description != null && !event.description.isEmpty()) {
-                    ((TextView) viewDescription.findViewById(R.id.textview_texto)).setText(event.description);
+                    ((TextView) viewDescription.findViewById(R.id.tv_text)).setText(event.description);
                 } else {
-                    ((TextView) viewDescription.findViewById(R.id.textview_texto)).setText(getString(R.string.no_disponible));
+                    ((TextView) viewDescription.findViewById(R.id.tv_text)).setText(getString(R.string.no_disponible));
                 }
 
                 progressBar.setVisibility(View.GONE);
@@ -219,12 +215,11 @@ public class EventActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(EventActivity.this, "Error obteniendo los datos", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EventActivity.this, R.string.error_getting_data, Toast.LENGTH_SHORT).show();
             }
         });
 
-        // Puesto que la web del ayuntamiento va regular, es bueno hacer varios intentos y ajustar el timeout
-        stringRequest.setRetryPolicy(new CulturalbaRetryPolicy());
+        stringRequest.setRetryPolicy(new ApplicationRetryPolicy());
         queue.add(stringRequest);
 
     }

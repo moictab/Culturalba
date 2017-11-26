@@ -69,14 +69,14 @@ public class BlockFragment extends Fragment {
             holder.event = events.get(position);
             holder.tvTitle.setText(events.get(position).title);
             holder.tvDate.setText(events.get(position).dateFrom);
-            holder.tvSchedule.setText(events.get(position).horario);
+            holder.tvSchedule.setText(events.get(position).schedule);
 
             holder.rootView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getActivity(), EventActivity.class);
                     intent.putExtra("url", holder.event.link);
-                    intent.putExtra("fecha", holder.event.dateFrom);
+                    intent.putExtra("date", holder.event.dateFrom);
                     startActivity(intent);
                 }
             });

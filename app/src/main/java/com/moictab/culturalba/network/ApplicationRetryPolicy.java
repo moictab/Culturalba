@@ -3,7 +3,7 @@ package com.moictab.culturalba.network;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 
-public class CulturalbaRetryPolicy implements RetryPolicy {
+public class ApplicationRetryPolicy implements RetryPolicy {
 
     private int currentTimeoutMs;
     private int currentRetryCount;
@@ -14,7 +14,7 @@ public class CulturalbaRetryPolicy implements RetryPolicy {
     private static final int MAX_RETRIES = 3;
     private static final float BACKOFF_MULT = 1f;
 
-    public CulturalbaRetryPolicy() {
+    public ApplicationRetryPolicy() {
         this.currentTimeoutMs = TIMEOUT_MS;
         this.maxNumRetries = MAX_RETRIES;
         this.backoffMultiplier = BACKOFF_MULT;

@@ -1,5 +1,7 @@
 package com.moictab.culturalba.scraper;
 
+import android.util.Log;
+
 import com.moictab.culturalba.model.Block;
 
 import org.jsoup.Jsoup;
@@ -12,6 +14,8 @@ import java.util.List;
 import com.moictab.culturalba.model.Event;
 
 public class WebScraper {
+
+    public static final String TAG = "WebScrapper";
 
     public static List<Block> scrapList(String response) {
 
@@ -34,16 +38,16 @@ public class WebScraper {
                 block.title = element.child(0).html();
                 block.events = new ArrayList<>();
 
-                List<Element> eventos = element.children();
-                eventos.remove(0);
+                List<Element> events = element.children();
+                events.remove(0);
 
-                for (Element contentTypeEvento : eventos) {
+                for (Element contentTypeEvent : events) {
                     Event event = new Event();
-                    event.title = contentTypeEvento.select(".titulo").first().child(0).html();
-                    event.link = contentTypeEvento.select(".titulo").first().child(0).attr("href");
-                    event.dateFrom = contentTypeEvento.select(".fecha").first().html();
-                    event.horario = contentTypeEvento.select(".horario").first().html();
-                    event.location = contentTypeEvento.select(".lugar").first().html();
+                    event.title = contentTypeEvent.select(".titulo").first().child(0).html();
+                    event.link = contentTypeEvent.select(".titulo").first().child(0).attr("href");
+                    event.dateFrom = contentTypeEvent.select(".fecha").first().html();
+                    event.schedule = contentTypeEvent.select(".horario").first().html();
+                    event.location = contentTypeEvent.select(".lugar").first().html();
 
                     block.events.add(event);
                 }
@@ -51,13 +55,13 @@ public class WebScraper {
                 blocks.add(block);
             }
         } catch (Exception ex) {
-            return blocks;
+            Log.e(TAG, ex.getLocalizedMessage());
         }
 
         return blocks;
     }
 
-    public static Event scrapEvento(String response) {
+    public static Event scrapEvent(String response) {
 
         Document document = Jsoup.parse(response);
         Event event = new Event();
@@ -95,13 +99,13 @@ public class WebScraper {
         }
 
         try {
-            event.precios = document.select(".precios").get(0).child(0).ownText();
+            event.prices = document.select(".prices").get(0).child(0).ownText();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         try {
-            event.horario = document.select(".horario").get(0).child(0).ownText();
+            event.schedule = document.select(".schedule").get(0).child(0).ownText();
         } catch (Exception e) {
             e.printStackTrace();
         }

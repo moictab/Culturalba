@@ -8,16 +8,12 @@ import com.squareup.picasso.Picasso;
 
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by moict on 18/04/2016.
- */
 public class CulturalbaApplication extends Application {
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        // Configuración de las peticiones HTTP para cargar las imágenes
         OkHttpClient client = new OkHttpClient();
         client.setConnectTimeout(5, TimeUnit.SECONDS);
         client.setReadTimeout(5, TimeUnit.SECONDS);

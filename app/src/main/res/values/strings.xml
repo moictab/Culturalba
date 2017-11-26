@@ -7,7 +7,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="version">Versión 1.03</string>
+    <string name="version">Versión 1.04</string>
     <string name="localizacion">Localización</string>
     <string name="horario">Horario</string>
     <string name="precios">Precios</string>
@@ -15,7 +15,7 @@
     <string name="descripcion">Descripción</string>
     <string name="enlace_original">Enlace original</string>
     <string name="imagen_evento">Imagen del event</string>
-    <string name="title_activity_evento">EventoActivity</string>
+    <string name="title_activity_event">EventoActivity</string>
     <string name="action_actualizar">Actualizar</string>
     <string name="action_acerca">Acerca de</string>
     <string name="no_datos">Error al obtener los datos</string>
@@ -31,4 +31,9 @@
     <string name="mostrar_todo">Mostrar todos los eventos</string>
     <string name="mostrar_hoy">Mostrar eventos de hoy</string>
     <string name="Accept">Aceptar</string>
+    <string name="title">Título</string>
+    <string name="date">Fecha</string>
+    <string name="schedule">Horario</string>
+    <string name="error_getting_data">Error obteniendo los datos</string>
+    <string name="accept">Aceptar</string>
 </resources>

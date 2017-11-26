@@ -10,9 +10,6 @@ import android.widget.TextView;
 
 import com.moictab.culturalba.R;
 
-/**
- * Diálogo que se muestra cuando se pulsa la opción de "Acerca de"
- */
 public class AboutDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -28,10 +25,9 @@ public class AboutDialog extends DialogFragment {
         }
 
         TextView tvVersion = (TextView) rootView.findViewById(R.id.textview_version);
-        tvVersion.setText("Versión " + String.valueOf(version));
+        tvVersion.setText(String.valueOf(R.string.version) + String.valueOf(version));
 
-        builder.setView(rootView)
-                .setPositiveButton("Aceptar", null);
+        builder.setView(rootView).setPositiveButton(R.string.Accept, null);
 
         return builder.create();
     }
