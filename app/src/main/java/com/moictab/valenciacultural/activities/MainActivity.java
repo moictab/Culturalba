@@ -1,5 +1,6 @@
-package com.moictab.culturalba.activities;
+package com.moictab.valenciacultural.activities;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -10,35 +11,38 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.moictab.culturalba.R;
-import com.moictab.culturalba.model.Block;
-import com.moictab.culturalba.scraper.WebScraper;
+import com.moictab.valenciacultural.R;
+import com.moictab.valenciacultural.controller.BlocksController;
+import com.moictab.valenciacultural.controller.NetworkController;
+import com.moictab.valenciacultural.dialogs.StartDialog;
+import com.moictab.valenciacultural.fragments.BlockFragment;
+import com.moictab.valenciacultural.model.Block;
+import com.moictab.valenciacultural.model.Event;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final static String URL_TODAY = "http://www.albacete.es/es/agenda";
+    public static final String TAG = "MainActivity";
+    public static final String URL = "http://www.valencia.es/ayuntamiento/agenda_accesible.nsf/agenda.xml";
 
     private List<Block> blocks = new ArrayList<>();
+    private List<Event> events = new ArrayList<>();
+
+    private NetworkController networkBusiness;
     private RequestQueue queue;
 
-    private ViewPager mViewPager;
+    private ViewPager viewPager;
     private ProgressBar progressBar;
     private View emptyLayout;
 
@@ -47,14 +51,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        viewPager = findViewById(R.id.container);
 
-        progressBar = (ProgressBar) findViewById(R.id.progressbar);
+        progressBar = findViewById(R.id.progressbar);
         emptyLayout = findViewById(R.id.empty_layout);
-        Button reloadButton = (Button) emptyLayout.findViewById(R.id.button_reload);
+        Button reloadButton = emptyLayout.findViewById(R.id.button_reload);
         reloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        queue = Volley.newRequestQueue(MainActivity.this);
+        queue = Volley.newRequestQueue(this);
         makeRequest();
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
@@ -73,47 +77,41 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     public void makeRequest() {
 
+        networkBusiness = new NetworkController(events, queue);
+
         progressBar.setVisibility(View.VISIBLE);
-        mViewPager.setVisibility(View.INVISIBLE);
+        viewPager.setVisibility(View.INVISIBLE);
         emptyLayout.setVisibility(View.GONE);
+        queue.add(networkBusiness.getEventsRequest(URL));
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_TODAY, new Response.Listener<String>() {
+        queue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
             @Override
-            public void onResponse(String response) {
-                blocks.clear();
-                blocks = WebScraper.scrapList(response);
-
-                setAdapter();
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("Volley", "Error: " + error.getMessage());
-                Toast.makeText(MainActivity.this, R.string.error_getting_data, Toast.LENGTH_SHORT).show();
-                progressBar.setVisibility(View.GONE);
-                emptyLayout.setVisibility(View.VISIBLE);
-                mViewPager.setVisibility(View.INVISIBLE);
+            public void onRequestFinished(Request<Object> request) {
+                networkBusiness.requestFinished();
+                if (!networkBusiness.isRequestsPending()) {
+                    setAdapter();
+                }
             }
         });
-
-        queue.add(stringRequest);
     }
 
     private void setAdapter() {
-        PagerAdapter mSectionsPagerAdapter = new PagerAdapter(getSupportFragmentManager());
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-        mSectionsPagerAdapter.notifyDataSetChanged();
+        BlocksController controller = new BlocksController();
+        events = networkBusiness.getEvents();
+        blocks = controller.getBlocks(events);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
+        BlocksAdapter adapter = new BlocksAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+        TabLayout tabLayout = findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
         progressBar.setVisibility(View.GONE);
-        mViewPager.setVisibility(View.VISIBLE);
+        viewPager.setVisibility(View.VISIBLE);
         emptyLayout.setVisibility(View.GONE);
     }
 
@@ -128,28 +126,27 @@ public class MainActivity extends AppCompatActivity {
 
         int id = item.getItemId();
 
+        if (id == R.id.action_favs) {
+            Intent intent = new Intent(MainActivity.this, FavsActivity.class);
+            startActivity(intent);
+        }
+
         if (id == R.id.action_actualizar) {
             makeRequest();
             return true;
         }
 
-        if (id == R.id.action_acerca) {
-            AboutDialog dialog = new AboutDialog();
-            dialog.show(getFragmentManager(), "AboutDialog");
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
-    public class PagerAdapter extends FragmentStatePagerAdapter {
+    public class BlocksAdapter extends FragmentStatePagerAdapter {
 
-        PagerAdapter(FragmentManager fm) {
-            super(fm);
+        BlocksAdapter(FragmentManager fragmentManager) {
+            super(fragmentManager);
         }
 
         @Override
         public Fragment getItem(int position) {
-
             Fragment fragment = BlockFragment.newInstance(position + 1);
             Bundle bundle = new Bundle();
             bundle.putSerializable("block", blocks.get(position));

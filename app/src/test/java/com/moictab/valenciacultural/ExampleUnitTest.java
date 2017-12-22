@@ -1,4 +1,4 @@
-package com.moictab.culturalba;
+package com.moictab.valenciacultural;
 
 import org.junit.Test;
 

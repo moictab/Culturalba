@@ -1,4 +1,4 @@
-package com.moictab.culturalba.activities;
+package com.moictab.valenciacultural.activities;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -24,21 +24,19 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.moictab.culturalba.R;
+import com.moictab.valenciacultural.R;
+import com.moictab.valenciacultural.model.Event;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.squareup.picasso.Transformation;
 
-import hirondelle.date4j.DateTime;
 import jp.wasabeef.picasso.transformations.ColorFilterTransformation;
 
-import com.moictab.culturalba.model.Event;
-import com.moictab.culturalba.network.ApplicationRetryPolicy;
-import com.moictab.culturalba.scraper.WebScraper;
+import com.moictab.valenciacultural.network.ApplicationRetryPolicy;
+import com.moictab.valenciacultural.scraper.WebParser;
 
 public class EventActivity extends AppCompatActivity {
 
-    private String dateFromBlock = "";
     private Event event;
 
     private NestedScrollView scrollView;
@@ -56,11 +54,10 @@ public class EventActivity extends AppCompatActivity {
         setContentView(R.layout.activity_event);
 
         String url = getIntent().getExtras().getString("url");
-        dateFromBlock = getIntent().getExtras().getString("date");
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        final CollapsingToolbarLayout toolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+        final CollapsingToolbarLayout toolbarLayout = findViewById(R.id.toolbar_layout);
         final Target target = new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -80,10 +77,10 @@ public class EventActivity extends AppCompatActivity {
 
         toolbarLayout.setTag(target);
 
-        scrollView = (NestedScrollView) findViewById(R.id.evento_detail_container);
+        scrollView = findViewById(R.id.evento_detail_container);
         scrollView.setVisibility(View.INVISIBLE);
 
-        progressBar = (ProgressBar) findViewById(R.id.progressbar);
+        progressBar = findViewById(R.id.progressbar);
         progressBar.setVisibility(View.VISIBLE);
 
         viewLocation = findViewById(R.id.location);
@@ -92,19 +89,6 @@ public class EventActivity extends AppCompatActivity {
         viewDates = findViewById(R.id.fechas);
         viewLink = findViewById(R.id.link);
         viewDescription = findViewById(R.id.description);
-
-        viewLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + event.location + ", Albacete"));  // Abrimos Google Maps o similar
-                    startActivity(intent);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(EventActivity.this, "Error abriendo el mapa", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
 
         viewLink.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,47 +125,21 @@ public class EventActivity extends AppCompatActivity {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                event = WebScraper.scrapEvent(response);
+                event = new WebParser(response).scrapEvent();
 
                 Transformation transformation = new ColorFilterTransformation(Color.argb(100, 0, 0, 0));
 
-                Picasso.with(EventActivity.this).load(event.imageLink).resize(toolbarLayout.getWidth(), toolbarLayout.getHeight()).centerCrop().transform(transformation).into(target);
-                toolbarLayout.setTitle(event.title);
-
-                if (event.location != null && !event.location.isEmpty()) {
-                    ((TextView) viewLocation.findViewById(R.id.tv_text)).setText(event.location);
-                } else {
-                    ((TextView) viewLocation.findViewById(R.id.tv_text)).setText(getString(R.string.no_disponible));
+                if (event.image != null && !event.image.isEmpty()) {
+                    Picasso.with(EventActivity.this).load(event.image).resize(toolbarLayout.getWidth(), toolbarLayout.getHeight()).centerCrop().transform(transformation).into(target);
                 }
+
+                toolbarLayout.setTitle(event.title);
 
                 if (event.link != null && !event.link.isEmpty()) {
                     ((TextView) viewLink.findViewById(R.id.tv_text)).setText(event.link);
                     ((TextView) viewLink.findViewById(R.id.tv_text)).setTextColor(getResources().getColor(R.color.blue_link));
                 } else {
                     ((TextView) viewLink.findViewById(R.id.tv_text)).setText(getString(R.string.no_disponible));
-                }
-
-                if (event.schedule != null && !event.schedule.isEmpty()) {
-                    ((TextView) viewSchedule.findViewById(R.id.tv_text)).setText(event.schedule);
-                } else {
-                    ((TextView) viewSchedule.findViewById(R.id.tv_text)).setText(getString(R.string.no_disponible));
-                }
-
-                if (event.dateFrom != null && !event.dateFrom.isEmpty() && event.dateTo != null && !event.dateTo.isEmpty()) {
-
-                    int yearFrom = Integer.parseInt(event.dateFrom.substring(0, 4));
-                    int monthFrom = Integer.parseInt(event.dateFrom.substring(5, 7));
-                    int dayFrom = Integer.parseInt(event.dateFrom.substring(8, 10));
-                    int yearTo = Integer.parseInt(event.dateTo.substring(0, 4));
-                    int monthTo = Integer.parseInt(event.dateTo.substring(5, 7));
-                    int dayTo = Integer.parseInt(event.dateTo.substring(8, 10));
-
-                    DateTime dateFrom = new DateTime(yearFrom, monthFrom, dayFrom, 0, 0, 0, 0);
-                    DateTime dateTo = new DateTime(yearTo, monthTo, dayTo, 0, 0, 0, 0);
-
-                    ((TextView) viewDates.findViewById(R.id.tv_text)).setText("Desde el " + dateFrom.format("DD/MM/YYYY") + " hasta el " + dateTo.format("DD/MM/YYYY"));
-                } else {
-                    ((TextView) viewDates.findViewById(R.id.tv_text)).setText(dateFromBlock);
                 }
 
                 if (event.prices != null && !event.prices.isEmpty()) {
@@ -199,7 +157,7 @@ public class EventActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
                 scrollView.setVisibility(View.VISIBLE);
 
-                FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+                FloatingActionButton fab = findViewById(R.id.fab);
                 fab.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

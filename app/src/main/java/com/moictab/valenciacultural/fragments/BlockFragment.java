@@ -1,6 +1,7 @@
-package com.moictab.culturalba.activities;
+package com.moictab.valenciacultural.fragments;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -8,15 +9,19 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
-import com.moictab.culturalba.R;
-import com.moictab.culturalba.model.Block;
-import com.moictab.culturalba.model.Event;
+import com.moictab.valenciacultural.R;
+import com.moictab.valenciacultural.activities.EventActivity;
+import com.moictab.valenciacultural.model.Block;
+import com.moictab.valenciacultural.model.Event;
 
 import java.util.List;
 
 public class BlockFragment extends Fragment {
+
+    public static final String TAG = "BlockFragment";
 
     private static final String ARG_SECTION_NUMBER = "SECTION_NUMBER";
     private Block block;
@@ -65,18 +70,35 @@ public class BlockFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
+        public void onBindViewHolder(final ViewHolder holder, final int position) {
             holder.event = events.get(position);
             holder.tvTitle.setText(events.get(position).title);
-            holder.tvDate.setText(events.get(position).dateFrom);
-            holder.tvSchedule.setText(events.get(position).schedule);
+            holder.tvDate.setText(events.get(position).date);
+            holder.tvLocation.setText(events.get(position).location);
+
+            holder.btnFav.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
+
+            holder.btnShare.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, getShareText(events.get(position)));
+                    sendIntent.setType("text/plain");
+                    startActivity(sendIntent);
+                }
+            });
 
             holder.rootView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getActivity(), EventActivity.class);
                     intent.putExtra("url", holder.event.link);
-                    intent.putExtra("date", holder.event.dateFrom);
                     startActivity(intent);
                 }
             });
@@ -92,17 +114,32 @@ public class BlockFragment extends Fragment {
             final View rootView;
             final TextView tvTitle;
             final TextView tvDate;
-            final TextView tvSchedule;
+            final TextView tvLocation;
+
+            final Button btnFav;
+            final Button btnShare;
 
             Event event;
 
             ViewHolder(View view) {
                 super(view);
                 rootView = view;
-                tvTitle = (TextView) view.findViewById(R.id.tv_title);
-                tvDate = (TextView) view.findViewById(R.id.tv_date);
-                tvSchedule = (TextView) view.findViewById(R.id.tv_schedule);
+                tvTitle = view.findViewById(R.id.tv_title);
+                tvDate = view.findViewById(R.id.tv_date);
+                tvLocation = view.findViewById(R.id.tv_location);
+                btnFav = view.findViewById(R.id.btn_favs);
+                btnShare = view.findViewById(R.id.btn_share);
             }
         }
+    }
+
+    private String getShareText(Event event) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Mira el evento ");
+        builder.append(event.title);
+        builder.append(" en este enlace: ");
+        builder.append(event.link);
+
+        return builder.toString();
     }
 }

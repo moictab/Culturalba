@@ -1,4 +1,4 @@
-package com.moictab.culturalba.activities;
+package com.moictab.valenciacultural.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -6,7 +6,7 @@ import android.app.DialogFragment;
 import android.os.Bundle;
 import android.view.View;
 
-import com.moictab.culturalba.R;
+import com.moictab.valenciacultural.R;
 
 public class StartDialog extends DialogFragment {
     @Override

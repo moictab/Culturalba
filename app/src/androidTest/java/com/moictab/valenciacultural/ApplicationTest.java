@@ -1,4 +1,4 @@
-package com.moictab.culturalba;
+package com.moictab.valenciacultural;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

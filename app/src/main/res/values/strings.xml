@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Culturalba</string>
+    <string name="app_name">Valencia Cultural</string>
     <string name="action_settings">Ajustes</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="title_activity_main2">Main2Activity</string>
@@ -7,7 +7,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="version">Versión 1.04</string>
+    <string name="version">Versión</string>
     <string name="localizacion">Localización</string>
     <string name="horario">Horario</string>
     <string name="precios">Precios</string>
@@ -23,7 +23,6 @@
     <string name="recargar">Recargar</string>
     <string name="hecho_por">Hecho por moictab para la Hackaton del GDG Albacete de la Semana Cultural de la Escuela Politécnica Superior de Albacete</string>
     <string name="source_code">Puedes obtener el código fuente en </string>
-    <string name="github">https://github.com/moictab/culturalba</string>
     <string name="inicio">Esta aplicación obtiene los datos directamente de la web del Ayuntamiento de Albacete, por lo que si ves fechas erróneas, desactualizadas, faltas de ortografía, o información incorrecta en general, debes saber que es porque así está en la web. \n\n\nAparte de eso, espero que la aplicación te resulte útil. En \"Acerca de\" puedes ver más información y obtener el código fuente si lo deseas.</string>
     <string name="action_share">Compartir</string>
     <string name="url">http://www.albacete.es/es/agenda/agenda-completa</string>
@@ -36,4 +35,8 @@
     <string name="schedule">Horario</string>
     <string name="error_getting_data">Error obteniendo los datos</string>
     <string name="accept">Aceptar</string>
+    <string name="location">location</string>
+    <string name="detalles">Detalles</string>
+    <string name="share">Compartir</string>
+    <string name="favs">Favoritos</string>
 </resources>

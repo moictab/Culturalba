@@ -27,7 +27,6 @@
         android:layout_height="wrap_content"
         android:autoLink="web"
         android:gravity="center"
-        android:text="@string/github"
         android:textSize="16sp" />
 
     <TextView
