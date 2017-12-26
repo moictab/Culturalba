@@ -14,17 +14,25 @@ import android.widget.TextView;
 
 import com.moictab.valenciacultural.R;
 import com.moictab.valenciacultural.activities.EventActivity;
+import com.moictab.valenciacultural.controller.FavsController;
+import com.moictab.valenciacultural.dao.FavDao;
 import com.moictab.valenciacultural.model.Block;
 import com.moictab.valenciacultural.model.Event;
+import com.moictab.valenciacultural.model.Fav;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class BlockFragment extends Fragment {
 
     public static final String TAG = "BlockFragment";
 
     private static final String ARG_SECTION_NUMBER = "SECTION_NUMBER";
+    private FavsController favsController;
     private Block block;
+    private List<Fav> favedEvents = new ArrayList<>();
 
     public BlockFragment() {
         // Default empty constructor
@@ -44,13 +52,16 @@ public class BlockFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         this.block = (Block) getArguments().getSerializable("block");
 
-        View recyclerView = view.findViewById(R.id.events_list);
-        setupRecyclerView((RecyclerView) recyclerView);
+        RecyclerView recyclerView = view.findViewById(R.id.events_list);
+        setupRecyclerView(recyclerView);
 
         return view;
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
+
+        favedEvents = new FavsController().getAllFavs(getActivity());
+
         RecyclerViewAdapter adapter = new RecyclerViewAdapter(block.events);
         recyclerView.setAdapter(adapter);
     }
@@ -76,12 +87,17 @@ public class BlockFragment extends Fragment {
             holder.tvDate.setText(events.get(position).date);
             holder.tvLocation.setText(events.get(position).location);
 
-            holder.btnFav.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                }
-            });
+            if (favedEvents.contains(events.get(position))) {
+                holder.btnFav.setTextColor(getResources().getColor(R.color.gray));
+            } else {
+                holder.btnFav.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        favsController.saveEventOnFavs(getActivity(), events.get(position));
+                        holder.btnFav.setTextColor(getResources().getColor(R.color.gray));
+                    }
+                });
+            }
 
             holder.btnShare.setOnClickListener(new View.OnClickListener() {
                 @Override
