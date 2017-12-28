@@ -33,7 +33,7 @@ import com.squareup.picasso.Transformation;
 import jp.wasabeef.picasso.transformations.ColorFilterTransformation;
 
 import com.moictab.valenciacultural.network.ApplicationRetryPolicy;
-import com.moictab.valenciacultural.scraper.WebParser;
+import com.moictab.valenciacultural.scraper.EventParser;
 
 public class EventActivity extends AppCompatActivity {
 
@@ -125,15 +125,31 @@ public class EventActivity extends AppCompatActivity {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                event = new WebParser(response).scrapEvent();
+                event = new EventParser(response).scrapEvent();
+                toolbarLayout.setTitle(event.title);
+
+                if (event.location != null && !event.location.isEmpty()) {
+                    ((TextView) viewLocation.findViewById(R.id.tv_text)).setText(event.location);
+                } else {
+                    ((TextView) viewLocation.findViewById(R.id.tv_text)).setText(R.string.no_disponible);
+                }
 
                 Transformation transformation = new ColorFilterTransformation(Color.argb(100, 0, 0, 0));
-
                 if (event.image != null && !event.image.isEmpty()) {
                     Picasso.with(EventActivity.this).load(event.image).resize(toolbarLayout.getWidth(), toolbarLayout.getHeight()).centerCrop().transform(transformation).into(target);
                 }
 
-                toolbarLayout.setTitle(event.title);
+                if (event.date != null && !event.date.isEmpty()) {
+                    ((TextView) viewDates.findViewById(R.id.tv_text)).setText(event.date);
+                } else {
+                    ((TextView) viewDates.findViewById(R.id.tv_text)).setText(getString(R.string.no_disponible));
+                }
+
+                if (event.schedule != null && !event.schedule.isEmpty()) {
+                    ((TextView) viewSchedule.findViewById(R.id.tv_text)).setText(event.schedule);
+                } else {
+                    ((TextView) viewSchedule.findViewById(R.id.tv_text)).setText(getString(R.string.no_disponible));
+                }
 
                 if (event.link != null && !event.link.isEmpty()) {
                     ((TextView) viewLink.findViewById(R.id.tv_text)).setText(event.link);

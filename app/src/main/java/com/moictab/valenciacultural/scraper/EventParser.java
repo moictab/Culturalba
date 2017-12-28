@@ -2,22 +2,25 @@ package com.moictab.valenciacultural.scraper;
 
 import android.util.Log;
 
+import com.moictab.valenciacultural.controller.TextBlockController;
 import com.moictab.valenciacultural.model.Event;
 
-import org.json.JSONArray;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class WebParser {
+import java.util.HashMap;
+
+public class EventParser {
 
     public static final String TAG = "WebScrapper";
 
     private Document document;
+    private HashMap<String, String> blocks;
 
-    public WebParser(String response) {
+    public EventParser(String response) {
         this.document = Jsoup.parse(response);
+        blocks = getParsedBlocks(new TextBlockController().getTextBlocks(document));
     }
 
     public Event scrapEvent() {
@@ -30,6 +33,8 @@ public class WebParser {
         event.image = getImage();
         event.date = getDate();
         event.description = getDescription();
+        event.schedule = getSchedule();
+        event.prices = getPrices();
 
         return event;
     }
@@ -73,20 +78,7 @@ public class WebParser {
 
     public String getDescription() {
         try {
-            Elements elements = document.select(".bloque_texto");
-            StringBuilder builder = new StringBuilder();
-
-            for (Element element : elements) {
-                if (!element.html().contains("FECHA")
-                        && !element.html().contains("LUGAR")
-                        && !element.html().contains("PRECIO")
-                        && !element.html().contains("HORARIO")) {
-                    builder.append(element.text());
-                }
-            }
-
-            return builder.toString();
-
+            return document.select(".bloque_texto").last().text();
         } catch (Exception e) {
             Log.e(TAG, e.getLocalizedMessage());
             return "";
@@ -94,30 +86,64 @@ public class WebParser {
     }
 
     public String getPrices() {
+
+        if (blocks.containsKey("PRECIO")) {
+            return blocks.get("PRECIO");
+        }
+
+        if (blocks.containsKey("PRECIOS")) {
+            return blocks.get("PRECIOS");
+        }
+
         return "";
     }
 
     public String getDate() {
 
-        try {
-            Elements elements = document.select(".bloque_texto");
-            Element dateElement = null;
+        if (blocks.containsKey("FECHA")) {
+            return blocks.get("FECHA");
+        }
 
-            for (Element element : elements) {
-                if (element.text().contains("FECHA")) {
-                    dateElement = element;
-                }
-            }
-
-            if (dateElement != null) {
-                String text = dateElement.text();
-                return text.substring(text.indexOf("FECHA") + 7, text.indexOf("."));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (blocks.containsKey("FECHAS")) {
+            return blocks.get("FECHAS");
         }
 
         return "";
+    }
+
+    public String getSchedule() {
+
+        if (blocks.containsKey("HORARIO")) {
+            return blocks.get("HORARIO");
+        }
+
+        if (blocks.containsKey("HORARIOS")) {
+            return blocks.get("HORARIOS");
+        }
+
+        return "";
+    }
+
+    public HashMap<String, String> getParsedBlocks(String[] blocks) {
+
+        HashMap<String, String> map = new HashMap<>();
+
+        if (blocks == null || blocks.length == 0) {
+            return map;
+        }
+
+        try {
+            for (String block : blocks) {
+
+                String key = block.substring(8, block.indexOf("</strong>"));
+                String value = block.substring(block.indexOf("</strong>") + 10, block.length());
+                map.put(key, value);
+            }
+        } catch (Exception ex) {
+            return map;
+        }
+
+        return map;
     }
 
 }

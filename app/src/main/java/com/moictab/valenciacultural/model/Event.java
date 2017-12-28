@@ -23,6 +23,7 @@ public class Event implements Serializable {
     public String location;
     public String prices;
     public String guid;
+    public String schedule;
 
     public Event() {
 

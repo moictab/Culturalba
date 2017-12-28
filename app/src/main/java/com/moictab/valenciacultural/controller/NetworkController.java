@@ -1,7 +1,6 @@
 package com.moictab.valenciacultural.controller;
 
 import android.util.Log;
-import android.view.View;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -10,7 +9,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.moictab.valenciacultural.model.Event;
 import com.moictab.valenciacultural.scraper.FeedParser;
-import com.moictab.valenciacultural.scraper.WebParser;
+import com.moictab.valenciacultural.scraper.EventParser;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -66,7 +65,7 @@ public class NetworkController {
         return new StringRequest(Request.Method.GET, event.link, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                WebParser parser = new WebParser(response);
+                EventParser parser = new EventParser(response);
                 event.date = parser.getDate();
 
                 try {
